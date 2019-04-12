@@ -17,11 +17,9 @@ var connection = mysql.createConnection({
 
 });
 
-
 connection.connect(function (err) {
   console.log("Connected as id: " + connection.threadId);
 })
-
 
 showStore();
 
@@ -64,12 +62,12 @@ function questions() {
           var productName = res[0].product_name;
           var price = parseInt(res[0].price);
 
-
           if (err) throw err;
 
           if (parseInt(currentInv) < parseInt(userOrder)) {
             console.log("INSUFFICIENT QUANTITY! ORDER LESS!")
-            connection.end();
+            setTimeout(function () { showStore(); }, 1200);
+
           }
           else {
             var orderTotal = userOrder * price;
@@ -90,28 +88,46 @@ function questions() {
                   "The total for your order is $" + orderTotal);
               }
             );
-            connection.end();
+            //connection.end();
+            setTimeout(function () { continueShop(); }, 1200);
           }
         })
     })
 }
 
-function showStore(){
+function showStore() {
   connection.query("SELECT item_id, product_name, price, stock_quantity FROM product",
-        function (err, res) {
-          if (err) throw err;
-          //console.log(res);
-          var table = ""; 
-          for (var i = 0; i < res.length; i++){
-            table = ""; 
-            table += "Item ID: " + res[i].item_id + " || Product Name: " + res[i].product_name + " ||" + "Price: $" + res[i].price + " ||" 
-            + "Number Available: " + res[i].stock_quantity + " ||";
-            console.log(table);
-          }
-
-        })
-        setTimeout(function(){questions();}, 1200)
+    function (err, res) {
+      if (err) throw err;
+      //console.log(res);
+      var table = "";
+      for (var i = 0; i < res.length; i++) {
+        table = "";
+        table += "Item ID: " + res[i].item_id + " || Product Name: " + res[i].product_name + " ||" + "Price: $" + res[i].price + " ||"
+          + "Number Available: " + res[i].stock_quantity + " ||";
+        console.log("--------------------------------------------------------------------------------------\n",
+          table)
       }
+    })
+  setTimeout(function () { questions(); }, 1200)
+}
 
-
+function continueShop() {
+  inquirer
+    .prompt([
+      {
+        type: "rawlist",
+        message: "Would you like to continue shopping?",
+        name: "continue",
+        choices: ["YES", "NO"]
+      }
+    ]).then(function (inquirerResponse) {
+      if (inquirerResponse.continue === 'YES') {
+        showStore();
+      }
+      else {
+        connection.end();
+      }
+    })
+}
 
