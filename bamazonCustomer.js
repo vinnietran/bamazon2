@@ -100,9 +100,13 @@ function showStore(){
   connection.query("SELECT item_id, product_name, price, stock_quantity FROM product",
         function (err, res) {
           if (err) throw err;
-          console.log(res);
+          //console.log(res);
+          var table = ""; 
           for (var i = 0; i < res.length; i++){
-            
+            table = ""; 
+            table += "Item ID: " + res[i].item_id + " || Product Name: " + res[i].product_name + " ||" + "Price: $" + res[i].price + " ||" 
+            + "Number Available: " + res[i].stock_quantity + " ||";
+            console.log(table);
           }
 
         })
