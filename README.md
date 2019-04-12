@@ -4,5 +4,5 @@ This application uses Node.js as well as MySQL, and Inquirer to create a faux 'A
 
 When the application is first ran, the entire inventory in the MySQL DB displays for the user 
 
-![DB](Showing DB.png)
+![DB](item.png)
 
